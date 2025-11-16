@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/logi.java to edit this template
  */
 package Lab_7;
 
@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class login extends javax.swing.JFrame {
 
     /**
-     * Creates new form Jframe
+     * Creates new form login
      */
     public login() {
         initComponents();
@@ -165,18 +165,69 @@ public class login extends javax.swing.JFrame {
             menu.setVisible(true);
     }//GEN-LAST:event_signbottonActionPerformed
 
-    private void confirmbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmbuttonActionPerformed
-      String username = usernametextfield.getText();
-        String password = new String(passwordtextfield.getText());
-
-        if (username.isEmpty() || password.isEmpty()) {
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+    
+    private void confirmbuttonActionPerformed(java.awt.event.ActionEvent evt) {
+        String usernameOrEmail = usernametextfield.getText().trim();
+        String password = passwordtextfield.getText();
+        String role = (String) chooserole.getSelectedItem();
+        
+      
+        if (usernameOrEmail.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Username and Password fields cannot be empty.",
-                    "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return; 
+                "Username/Email and Password are required.",
+                "Input Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    }//GEN-LAST:event_confirmbuttonActionPerformed
+
+        
+        if (usernameOrEmail.contains("@") && !isValidEmail(usernameOrEmail)) {
+            JOptionPane.showMessageDialog(this,
+                "Please enter a valid email address.",
+                "Invalid Email",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+       
+        JOptionPane.showMessageDialog(this,
+            "Login successful!\nWelcome, " + usernameOrEmail + "!",
+            "Success",
+            JOptionPane.INFORMATION_MESSAGE);
+
+       
+        usernametextfield.setText("");
+        passwordtextfield.setText("");
+
+       
+        if ("Instructor".equals(role)) {
+            Instructor instructor = new Instructor(
+                "I" + System.currentTimeMillis(),
+                usernameOrEmail,
+                usernameOrEmail.contains("@") ? 
+                    usernameOrEmail : 
+                    usernameOrEmail + "@example.com",
+                password
+            );
+            
+            java.awt.EventQueue.invokeLater(() -> {
+                InstructorDashboard dashboard = new InstructorDashboard(instructor);
+                dashboard.setVisible(true);
+                this.dispose();
+            });
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Student dashboard is under construction.",
+                "Student Access",
+                JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+        }
+    }                                             
 
     /**
      * @param args the command line arguments
@@ -195,13 +246,13 @@ public class login extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Jframe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(logi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Jframe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(logi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Jframe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(logi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Jframe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(logi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
