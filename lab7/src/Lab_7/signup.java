@@ -37,7 +37,7 @@ public class signup extends javax.swing.JFrame {
         emailtextfield = new javax.swing.JTextField();
         Passwordtextfield = new javax.swing.JTextField();
         confirm = new javax.swing.JButton();
-        role = new javax.swing.JComboBox<>();
+        JcomboBox = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -69,10 +69,10 @@ public class signup extends javax.swing.JFrame {
             }
         });
 
-        role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Student", "Instructor" }));
-        role.addActionListener(new java.awt.event.ActionListener() {
+        JcomboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Student", "Instructor" }));
+        JcomboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                roleActionPerformed(evt);
+                JcomboBoxActionPerformed(evt);
             }
         });
 
@@ -102,7 +102,7 @@ public class signup extends javax.swing.JFrame {
                                 .addComponent(usernametextfield)
                                 .addComponent(emailtextfield)
                                 .addComponent(Passwordtextfield)
-                                .addComponent(role, 0, 149, Short.MAX_VALUE)))))
+                                .addComponent(JcomboBox, 0, 149, Short.MAX_VALUE)))))
                 .addContainerGap(357, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -127,7 +127,7 @@ public class signup extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(role, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JcomboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(confirm)
                 .addContainerGap(152, Short.MAX_VALUE))
@@ -136,29 +136,110 @@ public class signup extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void roleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roleActionPerformed
+    private void JcomboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JcomboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_roleActionPerformed
+    }//GEN-LAST:event_JcomboBoxActionPerformed
 
     private void usernametextfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernametextfieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernametextfieldActionPerformed
 
-    private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
-          String username = usernametextfield.getText();
-        String password = new String(Passwordtextfield.getText());
-
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Username and Password fields cannot be empty.",
-                    "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return; 
-    }//GEN-LAST:event_confirmActionPerformed
-
     private void PasswordtextfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordtextfieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PasswordtextfieldActionPerformed
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+   
+
+    private void confirmActionPerformed(java.awt.event.ActionEvent evt) {
+        String username = usernametextfield.getText().trim();
+        String email = emailtextfield.getText().trim();
+        String password = Passwordtextfield.getText();
+        String role = (String) JcomboBox.getSelectedItem();
+        
+        
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "All fields are required.",
+                "Missing Information",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (!username.matches("^[a-zA-Z0-9_]{3,20}$")) {
+            JOptionPane.showMessageDialog(this,
+                "Username must be 3-20 characters long and can only contain letters, numbers, and underscores.",
+                "Invalid Username",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            JOptionPane.showMessageDialog(this,
+                "Please enter a valid email address.",
+                "Invalid Email",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (!username.matches("^[a-zA-Z0-9_]{3,20}$")) {
+            JOptionPane.showMessageDialog(this,
+                "Username must be 3-20 characters long and can only contain letters, numbers, and underscores.",
+                "Invalid Username",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            JOptionPane.showMessageDialog(this,
+                "Please enter a valid email address.",
+                "Invalid Email",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            
+            Instructor instructor = new Instructor(
+                "I" + System.currentTimeMillis(),
+                username,
+                email,
+                password
+            );
+            
+            
+            JOptionPane.showMessageDialog(this,
+                "Sign up successful!\n" +
+                "Username: " + username + "\n" +
+                "Email: " + email + "\n" +
+                "Role: " + role,
+                "Registration Successful",
+                JOptionPane.INFORMATION_MESSAGE);
+            
+            
+            usernametextfield.setText("");
+            emailtextfield.setText("");
+            Passwordtextfield.setText("");
+            
+            
+            java.awt.EventQueue.invokeLater(() -> {
+                InstructorDashboard dashboard = new InstructorDashboard(instructor);
+                dashboard.setVisible(true);
+                this.dispose();
+            });
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                "An error occurred during registration: " + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }                                       
 
     /**
      * @param args the command line arguments
@@ -196,6 +277,7 @@ public class signup extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> JcomboBox;
     private javax.swing.JTextField Passwordtextfield;
     private javax.swing.JButton confirm;
     private javax.swing.JTextField emailtextfield;
@@ -205,7 +287,6 @@ public class signup extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JComboBox<String> role;
     private javax.swing.JTextField usernametextfield;
     // End of variables declaration//GEN-END:variables
 }
