@@ -220,13 +220,27 @@ public class login extends javax.swing.JFrame {
                 dashboard.setVisible(true);
                 this.dispose();
             });
-        } else {
-            JOptionPane.showMessageDialog(this,
-                "Student dashboard is under construction.",
-                "Student Access",
-                JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-        }
+        }    else if ("Student".equals(role)) {
+
+    Student student = new Student(
+        "S" + System.currentTimeMillis(),
+        usernameOrEmail,
+        usernameOrEmail.contains("@") ?
+            usernameOrEmail :
+            usernameOrEmail + "@example.com",
+        password
+    );
+
+    java.awt.EventQueue.invokeLater(() -> {
+        StudentDashboard dashboard = new StudentDashboard(student);
+        dashboard.setVisible(true);
+        this.dispose();
+    });
+}
+
+}
+
+
     }                                             
 
     /**
