@@ -45,10 +45,10 @@ public class JsonDatabaseManager {
 
                 if ("student".equalsIgnoreCase(t.role)) {
                     Student s = new Student(
-                            t.userId,
+                            t.id,
                             t.username,
                             t.email,
-                            t.passwordHash,
+                            t.hashedPassword,
                             t.enrolledCourses,
                             t.progress
                     );
@@ -57,10 +57,10 @@ public class JsonDatabaseManager {
 
                 else if ("instructor".equalsIgnoreCase(t.role)) {
                     Instructor i = new Instructor(
-                            t.userId,
+                            t.id,
                             t.username,
                             t.email,
-                            t.passwordHash
+                            t.hashedPassword
                     );
                     finalUsers.add(i);
                 }
@@ -178,25 +178,27 @@ public void updateUser(User updated) {
         createIfMissing(COURSES_FILENAME);
     }
 
-    private void createIfMissing(String filename) {
-        Path path = Paths.get(filename);
-        if (!Files.exists(path)) {
-            try {
-           
-                Files.writeString(path, "[]");
-            } catch (IOException ignored) {
-              
-                System.err.println("WARNING: Could not create " + filename);
-            }
+  private void createIfMissing(String filename) {
+    Path path = Paths.get(filename);
+    if (!Files.exists(path)) {
+        try {
+            Files.writeString(path, "[]");
+            System.out.println("SUCCESS: Created file at " + path.toAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("ERROR: Could not create " + filename);
+            e.printStackTrace(); 
         }
+    } else {
+        System.out.println("FOUND: File exists at " + path.toAbsolutePath());
     }
+}
 
 private static class TempUser {
-    String userId;
+    String id;
     String role;
     String username;
     String email;
-    String passwordHash;
+    String hashedPassword;
 
     List<String> enrolledCourses; 
     Map<String, Map<String, Boolean>> progress; 
